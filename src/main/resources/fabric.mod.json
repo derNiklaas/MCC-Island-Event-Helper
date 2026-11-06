@@ -41,5 +41,12 @@
   },
   "breaks": {
     "islandseamonsterlocator": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.modrinth": "https://modrinth.com/mod/mcc-island-event-helper"
+      }
+    }
   }
 }
