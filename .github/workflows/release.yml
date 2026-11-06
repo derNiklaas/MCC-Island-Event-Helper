@@ -56,7 +56,7 @@ jobs:
         run: |
           mkdir -p build/libs
           for target in 26.1.2 26.2 26.3; do
-            cp "$RUNNER_TEMP/$target"/build/libs/*.jar build/libs/
+            cp "$RUNNER_TEMP/$target"/build/libs/*+"$target".jar build/libs/
           done
 
       - name: read metadata
@@ -84,9 +84,7 @@ jobs:
         background: true
         uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
         with:
-          files: |
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.1.2.jar
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.1.2-sources.jar
+          files: build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.1.2.jar
           name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.1.2
           version: ${{ steps.metadata.outputs.version }}+26.1.2
           version-type: release
@@ -108,9 +106,7 @@ jobs:
         background: true
         uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
         with:
-          files: |
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.2.jar
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.2-sources.jar
+          files: build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.2.jar
           name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.2
           version: ${{ steps.metadata.outputs.version }}+26.2
           version-type: release
@@ -132,9 +128,7 @@ jobs:
         background: true
         uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
         with:
-          files: |
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.3.jar
-            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.3-sources.jar
+          files: build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.3.jar
           name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.3
           version: ${{ steps.metadata.outputs.version }}+26.3
           version-type: release
