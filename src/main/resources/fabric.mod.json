@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "mccislandeventhelper",
+  "version": "${version}",
+  "name": "MCC Island Event Helper",
+  "description": "Helpers for MCC Island events, each one toggleable in the settings",
+  "authors": [
+    "derNiklaas"
+  ],
+  "contact": {
+    "sources": "https://github.com/derNiklaas/MCC-Island-Event-Helper",
+    "issues": "https://github.com/derNiklaas/MCC-Island-Event-Helper/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/mccislandeventhelper/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "de.derniklaas.mccislandeventhelper.MccIslandEventHelperClient"
+    ],
+    "modmenu": [
+      "de.derniklaas.mccislandeventhelper.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "mccislandeventhelper.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric-api": "*",
+    "minecraft": ">=${minecraft_version}",
+    "yet_another_config_lib_v3": ">=${yacl_version}"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "breaks": {
+    "islandseamonsterlocator": "*"
+  }
+}

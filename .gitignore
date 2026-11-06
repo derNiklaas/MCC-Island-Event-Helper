@@ -1,0 +1,17 @@
+**
+!.gitignore
+!src/
+!src/**
+!.github/
+!.github/**
+!gradle
+!gradle/**
+!images/
+!images/**
+
+!build.gradle.kts
+!settings.gradle.kts
+!gradle.properties
+!LICENSE.txt
+!README.md
+

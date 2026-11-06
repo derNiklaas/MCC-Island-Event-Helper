@@ -1,0 +1,11 @@
+{
+  "config.mccislandeventhelper.title": "MCC Island Event Helper",
+
+  "config.mccislandeventhelper.general": "General",
+  "config.mccislandeventhelper.general.enabled": "Enable mod",
+  "config.mccislandeventhelper.general.enabled.description": "Turns every feature on or off at once. The settings in the event tabs only apply while this is on.",
+
+  "config.mccislandeventhelper.sea_monsters": "Sea Monsters",
+  "config.mccislandeventhelper.sea_monsters.location_hearts": "Location hearts on fish orders",
+  "config.mccislandeventhelper.sea_monsters.location_hearts.description": "Adds a colored heart after each fish on an Event Fish Order. The color shows where that fish is caught."
+}
