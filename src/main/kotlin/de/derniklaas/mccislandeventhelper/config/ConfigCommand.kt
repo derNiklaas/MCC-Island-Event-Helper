@@ -1,6 +1,7 @@
 package de.derniklaas.mccislandeventhelper.config
 
 import com.mojang.brigadier.Command
+import de.derniklaas.mccislandeventhelper.util.ScreenOpener
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
@@ -20,10 +21,10 @@ object ConfigCommand {
                 }
             )
         }
-        ClientTickEvents.END_CLIENT_TICK.register { client ->
+        ClientTickEvents.END_CLIENT_TICK.register {
             if (openOnNextTick) {
                 openOnNextTick = false
-                client.setScreen(ConfigScreen.create(null))
+                ScreenOpener.open(ConfigScreen.create(null))
             }
         }
     }

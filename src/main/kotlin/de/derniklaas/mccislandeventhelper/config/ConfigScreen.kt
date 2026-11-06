@@ -35,6 +35,40 @@ object ConfigScreen {
                     defaults.seaMonstersLocationHearts,
                 )
             }
+
+            categories.register("cursed_carnival") {
+                name(Component.translatable("config.$MOD_ID.cursed_carnival"))
+                rootOptions.toggle(
+                    "cursed_carnival",
+                    "countdown",
+                    config::cursedCarnivalCountdown,
+                    defaults.cursedCarnivalCountdown,
+                )
+                rootOptions.toggle(
+                    "cursed_carnival",
+                    "countdown_in_games",
+                    config::cursedCarnivalCountdownInGames,
+                    defaults.cursedCarnivalCountdownInGames,
+                )
+                rootOptions.toggle(
+                    "cursed_carnival",
+                    "scraps",
+                    config::cursedCarnivalScraps,
+                    defaults.cursedCarnivalScraps,
+                )
+                rootOptions.toggle(
+                    "cursed_carnival",
+                    "scrap_games",
+                    config::cursedCarnivalScrapGames,
+                    defaults.cursedCarnivalScrapGames,
+                )
+                rootOptions.toggle(
+                    "cursed_carnival",
+                    "stats_api",
+                    config::cursedCarnivalStatsApi,
+                    defaults.cursedCarnivalStatsApi,
+                )
+            }
         }.generateScreen(parent)
     }
 

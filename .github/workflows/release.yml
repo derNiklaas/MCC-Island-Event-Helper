@@ -28,8 +28,36 @@ jobs:
         with:
           gradle-version: '9.8.2'
 
-      - name: build
-        run: gradle build
+      - name: create a worktree per target
+        run: |
+          for target in 26.1.2 26.2 26.3; do
+            git worktree add --detach "$RUNNER_TEMP/$target"
+          done
+
+      - name: build 26.1.2
+        id: build-26-1-2
+        background: true
+        run: gradle build -Ptarget=26.1.2 -p "$RUNNER_TEMP/26.1.2"
+
+      - name: build 26.2
+        id: build-26-2
+        background: true
+        run: gradle build -Ptarget=26.2 -p "$RUNNER_TEMP/26.2"
+
+      - name: build 26.3
+        id: build-26-3
+        background: true
+        run: gradle build -Ptarget=26.3 -p "$RUNNER_TEMP/26.3"
+
+      - name: wait for builds
+        wait: [build-26-1-2, build-26-2, build-26-3]
+
+      - name: collect jars
+        run: |
+          mkdir -p build/libs
+          for target in 26.1.2 26.2 26.3; do
+            cp "$RUNNER_TEMP/$target"/build/libs/*.jar build/libs/
+          done
 
       - name: read metadata
         id: metadata
@@ -51,37 +79,85 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: publish to modrinth & github
-        uses: Kir-Antipov/mc-publish@v3.3
+      - name: publish 26.1.2 to modrinth
+        id: modrinth-26-1-2
+        background: true
+        uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
         with:
-          # ---- artifacts ----
           files: |
-            build/libs/!(*-@(dev|sources|javadoc)).jar
-            build/libs/*-@(dev|sources|javadoc).jar
-
-          # ---- release info ----
-          name: MCC Island Event Helper ${{ steps.metadata.outputs.version }}
-          version: ${{ steps.metadata.outputs.version }}
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.1.2.jar
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.1.2-sources.jar
+          name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.1.2
+          version: ${{ steps.metadata.outputs.version }}+26.1.2
           version-type: release
           changelog: ${{ steps.changelog.outputs.log }}
-
-          # ---- metadata ----
           loaders: fabric
-          game-versions: |
-            26.1.2
-            26.2
-            26.3
+          game-versions: '26.1.2'
           java: 25
           dependencies: |
             fabric-api(required){modrinth:P7dR8mSH}
             fabric-language-kotlin(required){modrinth:Ha28R6CL}
             yet_another_config_lib_v3(required){modrinth:1eAoo2KR}
+            noxesium(required){modrinth:Kw7Sm3Xf}
             modmenu(optional){modrinth:mOgUt4GM}
-
-          # ---- modrinth ----
           modrinth-id: ${{ vars.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          # ---- github release ----
-          github-tag: ${{ github.ref_name }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: publish 26.2 to modrinth
+        id: modrinth-26-2
+        background: true
+        uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
+        with:
+          files: |
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.2.jar
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.2-sources.jar
+          name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.2
+          version: ${{ steps.metadata.outputs.version }}+26.2
+          version-type: release
+          changelog: ${{ steps.changelog.outputs.log }}
+          loaders: fabric
+          game-versions: '26.2'
+          java: 25
+          dependencies: |
+            fabric-api(required){modrinth:P7dR8mSH}
+            fabric-language-kotlin(required){modrinth:Ha28R6CL}
+            yet_another_config_lib_v3(required){modrinth:1eAoo2KR}
+            noxesium(required){modrinth:Kw7Sm3Xf}
+            modmenu(optional){modrinth:mOgUt4GM}
+          modrinth-id: ${{ vars.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+      - name: publish 26.3 to modrinth
+        id: modrinth-26-3
+        background: true
+        uses: Kir-Antipov/mc-publish@c23376546a97f5ba7984e94445da359459b14419 # v3.3
+        with:
+          files: |
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.3.jar
+            build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+26.3-sources.jar
+          name: MCC Island Event Helper ${{ steps.metadata.outputs.version }} for 26.3
+          version: ${{ steps.metadata.outputs.version }}+26.3
+          version-type: release
+          changelog: ${{ steps.changelog.outputs.log }}
+          loaders: fabric
+          game-versions: '26.3'
+          java: 25
+          dependencies: |
+            fabric-api(required){modrinth:P7dR8mSH}
+            fabric-language-kotlin(required){modrinth:Ha28R6CL}
+            yet_another_config_lib_v3(required){modrinth:1eAoo2KR}
+            noxesium(required){modrinth:Kw7Sm3Xf}
+            modmenu(optional){modrinth:mOgUt4GM}
+          modrinth-id: ${{ vars.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+      - name: wait for modrinth
+        wait: [modrinth-26-1-2, modrinth-26-2, modrinth-26-3]
+
+      - name: publish to github
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: MCC Island Event Helper ${{ steps.metadata.outputs.version }}
+          body: ${{ steps.changelog.outputs.log }}
+          files: build/libs/mccislandeventhelper-${{ steps.metadata.outputs.version }}+*.jar

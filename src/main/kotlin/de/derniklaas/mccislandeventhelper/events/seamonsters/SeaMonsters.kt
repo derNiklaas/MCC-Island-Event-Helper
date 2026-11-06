@@ -2,7 +2,7 @@ package de.derniklaas.mccislandeventhelper.events.seamonsters
 
 import de.derniklaas.mccislandeventhelper.MccIsland
 import de.derniklaas.mccislandeventhelper.config.EventHelperConfig
-import de.derniklaas.mccislandeventhelper.glyphs.HeartGlyphs
+import de.derniklaas.mccislandeventhelper.events.seamonsters.data.FishLocations
 import java.util.Locale
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.minecraft.network.chat.Component
@@ -23,7 +23,7 @@ object SeaMonsters {
         for (index in 1 until lines.size) {
             val line = lines[index]
             val color = FishLocations.heartFor(line.string) ?: continue
-            val heart = HeartGlyphs.icon(color) ?: continue
+            val heart = color.icon ?: continue
             lines[index] = line.copy().append(" ").append(heart)
         }
     }

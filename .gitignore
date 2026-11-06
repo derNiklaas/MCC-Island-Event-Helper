@@ -6,6 +6,8 @@
 !.github/**
 !gradle
 !gradle/**
+!versions/
+!versions/**
 !images/
 !images/**
 

@@ -3,9 +3,28 @@
 
   "config.mccislandeventhelper.general": "General",
   "config.mccislandeventhelper.general.enabled": "Enable mod",
-  "config.mccislandeventhelper.general.enabled.description": "Turns every feature on or off at once. The settings in the event tabs only apply while this is on.",
+  "config.mccislandeventhelper.general.enabled.description": "Turns every feature on or off at once.\n\nThe settings in the event tabs only apply while this is on.",
 
   "config.mccislandeventhelper.sea_monsters": "Sea Monsters",
   "config.mccislandeventhelper.sea_monsters.location_hearts": "Location hearts on fish orders",
-  "config.mccislandeventhelper.sea_monsters.location_hearts.description": "Adds a colored heart after each fish on an Event Fish Order. The color shows where that fish is caught."
+  "config.mccislandeventhelper.sea_monsters.location_hearts.description": "Adds a colored heart after each fish on an Event Fish Order. The color shows where that fish is caught.",
+
+  "config.mccislandeventhelper.cursed_carnival": "Cursed Carnival",
+  "config.mccislandeventhelper.cursed_carnival.countdown": "Activity countdown",
+  "config.mccislandeventhelper.cursed_carnival.countdown.description": "Shows which Carnival Activity starts next and how long until it does start.\n\nOnly visible in Lobbies and on Fishing Islands by default.",
+  "config.mccislandeventhelper.cursed_carnival.countdown_in_games": "Show countdown in games",
+  "config.mccislandeventhelper.cursed_carnival.countdown_in_games.description": "When enabled, the Activity countdown widget will always be visible.",
+  "config.mccislandeventhelper.cursed_carnival.scraps": "Ticket Scrap tracker",
+  "config.mccislandeventhelper.cursed_carnival.scraps.description": "Shows the current amount of Carnival Ticket Scrap you have.\n\nOnly visible in Lobbies or on Fishing Islands.",
+  "config.mccislandeventhelper.cursed_carnival.scrap_games": "Games for missing scrap",
+  "config.mccislandeventhelper.cursed_carnival.scrap_games.description": "Shows the game icons of games that reward scrap that you're missing.\n\nOnly works when you have the 'Ticket Scrap tracker' setting enabled.",
+  "config.mccislandeventhelper.cursed_carnival.stats_api":"Load scrap counts from the API ",
+  "config.mccislandeventhelper.cursed_carnival.stats_api.description": "Automatically load the amount of tickets you have from the API when joining the server.\n\nPlease note that this does make a request to 'stats.derniklaas.de' and requires the MCC Island 'Infinibag' API Setting to be turned on.",
+
+  "hud.mccislandeventhelper.cursed_carnival.countdown.title": "Next Carnival Activity",
+  "hud.mccislandeventhelper.cursed_carnival.countdown.next": "%s in %s",
+  "hud.mccislandeventhelper.cursed_carnival.scraps.title": "Ticket Scrap",
+  "hud.mccislandeventhelper.cursed_carnival.scraps.craftable.one": "You can craft 1 ticket",
+  "hud.mccislandeventhelper.cursed_carnival.scraps.craftable.many": "You can craft %s tickets",
+  "hud.mccislandeventhelper.cursed_carnival.scraps.missing": "Missing: %s"
 }

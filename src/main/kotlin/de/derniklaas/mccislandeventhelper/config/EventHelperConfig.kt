@@ -10,12 +10,48 @@ import net.minecraft.resources.Identifier
 class EventHelperConfig {
 
     @JvmField
-    @SerialEntry(comment = "Enable or Disable the mod and all of its features, regardless of other settings.")
+    @SerialEntry
     var enabled: Boolean = true
 
     @JvmField
-    @SerialEntry(comment = "Sea Monsters: Show colored hearts behind the name of fish in the order menu.")
+    @SerialEntry
     var seaMonstersLocationHearts: Boolean = true
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalCountdown: Boolean = true
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalCountdownInGames: Boolean = false
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalScraps: Boolean = true
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalScrapGames: Boolean = true
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalStatsApi: Boolean = false
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalCountdownX: Int = 5
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalCountdownY: Int = 5
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalScrapsX: Int = 5
+
+    @JvmField
+    @SerialEntry
+    var cursedCarnivalScrapsY: Int = 60
 
     companion object {
 
@@ -40,8 +76,15 @@ class EventHelperConfig {
             HANDLER.load()
         }
 
+        private val saveListeners = mutableListOf<() -> Unit>()
+
+        fun onSave(listener: () -> Unit) {
+            saveListeners += listener
+        }
+
         fun save() {
             HANDLER.save()
+            saveListeners.forEach { it() }
         }
     }
 }

@@ -1,3 +1,4 @@
+import java.util.Properties
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -7,7 +8,22 @@ plugins {
     id("maven-publish")
 }
 
-version = project.property("mod_version") as String
+val target = project.property("target") as String
+val targetProperties = Properties().apply {
+    val file = file("versions/$target.properties")
+    require(file.isFile) { "No versions/$target.properties. Known targets: ${file("versions").list()?.sorted()}" }
+    file.reader(Charsets.UTF_8).use(::load)
+}
+
+fun targetProperty(name: String): String =
+    targetProperties.getProperty(name) ?: error("versions/$target.properties is missing $name")
+
+val minecraftVersion = targetProperty("minecraft_version")
+val yaclVersion = targetProperty("yacl_version")
+val sheeplibVersion = targetProperty("sheeplib_version")
+val noxesiumVersion = targetProperty("noxesium_version")
+
+version = "${project.property("mod_version")}+$target"
 group = project.property("maven_group") as String
 
 base {
@@ -17,9 +33,6 @@ base {
 val targetJavaVersion = 25
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
 
@@ -39,6 +52,10 @@ repositories {
         name = "TerraformersMC"
         content { includeGroup("com.terraformersmc") }
     }
+    maven("https://maven.noxcrew.com/public") {
+        name = "Noxcrew"
+        content { includeGroupAndSubgroups("com.noxcrew") }
+    }
     maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1") {
         name = "DevAuth"
         content { includeGroup("me.djtheredstoner") }
@@ -48,54 +65,55 @@ repositories {
 loom {
     runs {
         named("client") {
-            vmArg("-Ddevauth.enabled=${project.findProperty("devauth") ?: "true"}")
+            runDir = if (target == "26.1.2") "run" else "run-$target"
+            property("devauth.enabled", project.findProperty("devauth")?.toString() ?: "true")
+            // -Pcapture=false turns off the dev capture logger.
+            project.findProperty("capture")?.let { property("eventhelper.capture", it.toString()) }
         }
     }
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
+    minecraft("com.mojang:minecraft:$minecraftVersion")
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     implementation("net.fabricmc:fabric-language-kotlin:${project.property("kotlin_loader_version")}")
 
-    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${targetProperty("fabric_version")}")
 
-    implementation("dev.isxander:yet-another-config-lib:${project.property("yacl_version")}")
+    implementation("dev.isxander:yet-another-config-lib:$yaclVersion")
 
-    compileOnly("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
-    localRuntime("com.terraformersmc:modmenu:${project.property("modmenu_version")}")
+    implementation("com.noxcrew.sheeplib:api:$sheeplibVersion")
+    include("com.noxcrew.sheeplib:api:$sheeplibVersion")
+
+    implementation("com.noxcrew.noxesium:fabric:$noxesiumVersion") { isTransitive = false }
+    compileOnly("com.noxcrew.noxesium:api:$noxesiumVersion")
+
+    compileOnly("com.terraformersmc:modmenu:${targetProperty("modmenu_version")}")
+    localRuntime("com.terraformersmc:modmenu:${targetProperty("modmenu_version")}")
 
     localRuntime("me.djtheredstoner:DevAuth-fabric:${project.property("devauth_version")}")
-
-    testImplementation(kotlin("test"))
 }
 
-val yaclMinVersion = (project.property("yacl_version") as String).substringBefore('+')
+val yaclMinVersion = yaclVersion.substringBefore('+')
 
 tasks.processResources {
-    inputs.property("version", project.version)
-    inputs.property("minecraft_version", project.property("minecraft_version"))
-    inputs.property("loader_version", project.property("loader_version"))
-    inputs.property("yacl_version", yaclMinVersion)
+    val expansions = mapOf(
+        "version" to project.version.toString(),
+        "minecraft_range" to targetProperty("minecraft_range"),
+        "loader_version" to project.property("loader_version") as String,
+        "kotlin_loader_version" to project.property("kotlin_loader_version") as String,
+        "yacl_version" to yaclMinVersion,
+        "noxesium_version" to noxesiumVersion,
+    )
+    inputs.properties(expansions)
     filteringCharset = "UTF-8"
 
     filesMatching("fabric.mod.json") {
-        expand(
-            "version" to project.version,
-            "minecraft_version" to project.property("minecraft_version")!!,
-            "loader_version" to project.property("loader_version")!!,
-            "kotlin_loader_version" to project.property("kotlin_loader_version")!!,
-            "yacl_version" to yaclMinVersion,
-        )
+        expand(expansions)
     }
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    // ensure that the encoding is set to UTF-8, no matter what the system default is
-    // this fixes some edge cases with special characters not displaying correctly
-    // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-    // If Javadoc is generated, this must be specified in that task too.
     options.encoding = "UTF-8"
     options.release.set(targetJavaVersion)
 }
@@ -110,20 +128,11 @@ tasks.jar {
     }
 }
 
-// configure the maven publication
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             artifactId = project.property("archives_base_name") as String
             from(components["java"])
         }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
     }
 }

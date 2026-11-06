@@ -1,6 +1,5 @@
-package de.derniklaas.mccislandeventhelper.events.seamonsters
+package de.derniklaas.mccislandeventhelper.events.seamonsters.data
 
-import de.derniklaas.mccislandeventhelper.glyphs.HeartColor
 import java.util.Locale
 
 object FishLocations {

@@ -20,6 +20,9 @@
     ],
     "modmenu": [
       "de.derniklaas.mccislandeventhelper.config.ModMenuIntegration"
+    ],
+    "noxesium": [
+      "de.derniklaas.mccislandeventhelper.EventHelperNoxesiumEntrypoint"
     ]
   },
   "mixins": [
@@ -29,8 +32,9 @@
     "fabricloader": ">=${loader_version}",
     "fabric-language-kotlin": ">=${kotlin_loader_version}",
     "fabric-api": "*",
-    "minecraft": ">=${minecraft_version}",
-    "yet_another_config_lib_v3": ">=${yacl_version}"
+    "minecraft": "${minecraft_range}",
+    "yet_another_config_lib_v3": ">=${yacl_version}",
+    "noxesium": ">=${noxesium_version}"
   },
   "suggests": {
     "modmenu": "*"
